@@ -1,5 +1,12 @@
 # clxcb-demos
 
+<p align="center">
+  <a href="../screenshots/all-demos.png">
+    <img src="../screenshots/all-demos.png" alt="All Demos" />
+  </a><br/>
+</p>
+
+
 Demo applications for [CLXCB](../clxcb).  Each demo is a small self-contained
 program illustrating one part of the X protocol — connections and server
 introspection, window creation and event handling, the SHAPE and RENDER
