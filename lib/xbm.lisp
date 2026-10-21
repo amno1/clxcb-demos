@@ -107,16 +107,16 @@
   "Repack raw XBM bytes into the wire format X11's PUT-IMAGE expects
    for XYBitmap at depth 1.  SCANLINE-PAD is the server's
    BITMAP-FORMAT-SCANLINE-PAD in bits; BIT-ORDER is its
-   BITMAP-FORMAT-BIT-ORDER (0 = LSBFirst, 1 = MSBFirst).  When
-   BIT-ORDER is 0, bits within each byte are reversed to convert from
-   XBM's MSB-first convention."
+   BITMAP-FORMAT-BIT-ORDER (0 = LSBFirst, 1 = MSBFirst).  XBM keeps the
+   leftmost pixel of each byte in its lowest bit, as LSBFirst does, so
+   only for an MSBFirst server are the bits within each byte reversed."
   (let* ((xbm-row   (ceiling width 8))
          (wire-row  (* (ceiling width scanline-pad)
                        (ceiling scanline-pad 8)))
          (out       (make-array (* wire-row height)
                                 :element-type '(unsigned-byte 8)
                                 :initial-element 0))
-         (reverse-p (zerop bit-order)))
+         (reverse-p (= bit-order 1)))
     (dotimes (row height)
       (let ((in-base  (* row xbm-row))
             (out-base (* row wire-row)))

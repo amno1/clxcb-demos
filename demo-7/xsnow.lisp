@@ -322,7 +322,7 @@
     (dotimes (row height)
       (dotimes (col width)
         (let* ((byte-idx (+ (* row row-bytes) (ash col -3)))
-               (bit-idx  (- 7 (logand col 7)))
+               (bit-idx  (logand col 7))   ; XBM: leftmost pixel in the low bit
                (byte     (if (< byte-idx (length bytes))
                              (aref bytes byte-idx)
                              0))
