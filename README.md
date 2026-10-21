@@ -1,13 +1,13 @@
 # clxcb-demos
 
 <p align="center">
-  <a href="../screenshots/all-demos.png">
-    <img src="../screenshots/all-demos.png" alt="All Demos" />
+  <a href="screenshots/all-demos.png">
+    <img src="screenshots/all-demos.png" alt="All Demos" />
   </a><br/>
 </p>
 
 
-Demo applications for [CLXCB](../clxcb).  Each demo is a small self-contained
+Demo applications for [CLXCB](https://github.com/amno1/clxcb).  Each demo is a small self-contained
 program illustrating one part of the X protocol — connections and server
 introspection, window creation and event handling, the SHAPE and RENDER
 extensions, image upload, and so on — written in Common Lisp on top of the CLXCB
@@ -16,8 +16,6 @@ binding.
 Some are ports of well-known X11 C programs; some are new.  The Common Lisp
 ports preserve the C version's behaviour but I did add some detail here or there
 ... :)
-
-![Demos 3–12 (all but xroach) running together in Xephyr](screenshots/all-demos.png)
 
 ## Requirements
 
