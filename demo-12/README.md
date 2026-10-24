@@ -20,7 +20,7 @@ You can drag the slider or click directly inside any box to type a temperature; 
 - **Dynamic Proportional Scaling**:
   - Font size and UI layout are linked by an `:scale <-> :font-size` relation.
   - Keyboard shortcuts (`Ctrl++`, `Ctrl+-`, `Ctrl+0`) and mouse drag gestures dynamically recompute typography metrics, widget padding, and window dimensions on the fly.
-- **Typography**: Uses `clxcb-truetype` for antialiased labels and digits.
+- **Typography**: Uses `Runes` (`runes/xcb`) for antialiased labels and digits.
 
 ## Loading in REPL
 

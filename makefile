@@ -8,7 +8,7 @@
 #   make clean             remove compiled fasls
 #
 # The demos depend on libraries that are not in Quicklisp yet: clxcb,
-# clxau, clxrm, clxcb-truetype and xact (see the README).  Any of
+# clxau, clxrm, runes and xact (see the README).  Any of
 # them checked out next to this directory (../clxcb, ../xact, ...) is put on
 # the ASDF source registry; the rest must already be there, e.g. cloned or
 # symlinked into ~/quicklisp/local-projects/.  Set DEPS_DIRS to use other
@@ -18,7 +18,7 @@ LISP       := sbcl
 LISPFLAGS  := --noinform --no-userinit --non-interactive
 
 DEPS_DIRS ?= ../clxcb ../clxau ../clXau ../clxrm ../clXrm \
-             ../clxcb-truetype ../xact
+             ../runes ../xact
 DEPS_FOUND := $(abspath $(wildcard $(DEPS_DIRS)))
 
 LISP_BOOT := \

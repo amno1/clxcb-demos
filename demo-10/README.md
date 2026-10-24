@@ -21,7 +21,7 @@ Features an interactive Saturation/Value (SV) gradient square, a continuous Hue 
   - Linear Hue strip.
   - Dual slider modes: RGB (Red, Green, Blue) and HSV (Hue, Saturation, Value).
   - Screen eyedropper (`xact:pick-color-from-screen`): Temporarily grabs pointer input and samples the exact pixel color under the cursor from the X11 root window.
-- **Typography & Styling**: Clean TrueType font rendering for values and labels via `clxcb-truetype`.
+- **Typography & Styling**: Clean TrueType font rendering for values and labels via `Runes` (`runes/xcb`).
 
 ## Loading in REPL
 

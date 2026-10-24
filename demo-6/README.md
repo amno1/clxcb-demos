@@ -14,7 +14,7 @@ Supports analog and digital clock faces, antialiased hands and ticks via the X11
 
 - **Window kind**: `:undecorated` (default; custom bottom-right resize grip and drag-to-move) or `:managed` when `:decorated t`.
 - **RENDER Extension**: Antialiased convex polygons and triangle fans for clock hands and dial tick marks. Falls back to classic `xcb:fill-poly` and `xcb:poly-segment` when RENDER is disabled.
-- **Modern Typography**: High-quality TrueType font rendering on the digital face and help overlay via `clxcb-truetype`.
+- **Modern Typography**: High-quality TrueType font rendering on the digital face and help overlay via `Runes` (`runes/xcb`).
 - **Smooth Resizing**: Implements the `_NET_WM_SYNC_REQUEST` protocol to eliminate resize tearing.
 
 ## Loading in REPL

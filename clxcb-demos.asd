@@ -8,7 +8,7 @@
   :if-feature :sbcl
   :depends-on ("clxcb" "clxcb/all" "cffi" "with-user-abort"
                "closer-mop" "bordeaux-threads" "file-select"
-               "clxcb-truetype" "clxrm/xcb"
+               "runes/xcb" "clxrm/xcb"
                "xact" "xact/color-picker" "alexandria"
                "trivial-garbage")
   :serial t

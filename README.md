@@ -28,7 +28,7 @@ ports preserve the C version's behaviour but I did add some detail here or there
   - [clxcb](https://github.com/amno1/clxcb), and its dependency
     [clxau](https://github.com/amno1/clxau)
   - [clxrm](https://github.com/amno1/clxrm)
-  - [clxcb-truetype](https://github.com/amno1/clxcb-truetype)
+  - [Runes](https://github.com/amno1/runes)
   - [xact](https://github.com/amno1/xact)
 - `libpng` (1.6 or later) for Demo 11's image decoding.
 

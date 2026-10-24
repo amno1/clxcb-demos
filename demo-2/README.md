@@ -19,7 +19,7 @@ Every keyboard, mouse, motion, exposure, and window management event is logged t
   - `MotionNotify` (pointer movement coordinates).
   - `Expose` and `ConfigureNotify` (geometry and structure notify).
   - Client message protocols (`WM_DELETE_WINDOW`).
-- **Typography**: Uses `clxcb-truetype` to render antialiased text ("DejaVu Sans Mono") directly into the window using X11 RENDER.
+- **Typography**: Uses `Runes` (`runes/xcb`) to render antialiased text ("DejaVu Sans Mono") directly into the window using X11 RENDER.
 - **Event Loop**: Powered by `xact:run-widget` with clean resource destruction on exit.
 
 ## Loading in REPL
