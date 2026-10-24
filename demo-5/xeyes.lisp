@@ -275,7 +275,7 @@
       (let* ((conn    (xact:widget-connection w))
              (screen  (xd:app-screen w))
              (visual  (xcb:root-visual screen))
-             (reply   (xcb-truetype:pict-formats-reply-for conn))
+             (reply   (runes/xcb:pict-formats-reply-for conn))
              (format  (xcb-render:find-visual-pict-format reply visual))
              (a8      (xcb-render:find-standard-pict-format
                        reply xcb-render:+pict-standard-a8+)))
@@ -366,7 +366,7 @@
                       points)))
             (xcb-render::tri-fan
              conn
-             xcb-truetype:+pict-op-over+
+             runes/xcb:+pict-op-over+
              (aref (xeyes-render-fill w) part)
              (xeyes-render-window-pict w)
              (xeyes-render-mask-format w)
@@ -418,7 +418,7 @@
                                        :height (+ hh 7))))
               (if (xeyes-render-p w)
                   (xcb-render::fill-rectangles
-                   conn xcb-truetype:+pict-op-over+
+                   conn runes/xcb:+pict-op-over+
                    (xeyes-render-window-pict w)
                    (xcb-render:make-color #xFFFF #xFFFF #xFFFF)
                    (list rect))

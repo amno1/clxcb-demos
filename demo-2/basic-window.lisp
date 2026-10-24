@@ -20,8 +20,8 @@
                                :wm-class "basic-window"
                                :app status-widget)
   (format t "~&=== Basic Window Demo ===~%")
-  (unless (plusp (hash-table-count xcb-truetype:*font-cache*))
-    (xcb-truetype:cache-fonts))
+  (unless (plusp (hash-table-count runes/xcb:*font-cache*))
+    (runes/xcb:cache-fonts))
   (let* ((widget (xd:make-application d conn :width 500 :height 350
                                              :x 100 :y 100))
          (screen (xd:app-screen widget))
@@ -45,12 +45,12 @@
                     :foreground (xcb:black-pixel screen))
     (xact:show widget)
 
-    (let* ((tt-win  (make-instance 'xcb-truetype:window
+    (let* ((tt-win  (make-instance 'runes/xcb:window
                                    :connection conn
                                    :id         wid
                                    :visual     (xd:app-visual widget)
                                    :screen     screen))
-           (tt-font (make-instance 'xcb-truetype:font
+           (tt-font (make-instance 'runes/xcb:font
                                    :family    "DejaVu Sans Mono"
                                    :subfamily "Book"
                                    :size      14))
@@ -69,7 +69,7 @@
         ;; The window is the application's: free only the wrapper's
         ;; picture (DESTROY-DRAWABLE would destroy the window too, which
         ;; UNREALIZE does below).
-        (xcb-truetype:release-drawable tt-win)
+        (runes/xcb:release-drawable tt-win)
         (ignore-errors (xcb::free-gc conn gc))
         (xact:unrealize widget)
         (format t "  Window resources cleanly released.~%")))))
@@ -104,7 +104,7 @@
 (defmethod xact:draw ((w status-widget) surface)
   (let ((conn (xact:widget-connection w)))
     (xcb::clear-area conn 0 surface 0 0 0 0)
-    (xcb-truetype:draw-text (status-widget-tt-window w)
+    (runes/xcb:draw-text (status-widget-tt-window w)
                             (status-widget-tt-font w)
                             (status-widget-text w)
                             16 32

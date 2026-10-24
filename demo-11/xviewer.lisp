@@ -525,7 +525,7 @@
           (viewer-current-size v)    nil)
     (cond
       ;; DESTROY-DRAWABLE frees the picture and then the pixmap.
-      (drawable (ignore-errors (xcb-truetype:destroy-drawable drawable)))
+      (drawable (ignore-errors (runes/xcb:destroy-drawable drawable)))
       (pixmap   (ignore-errors (xcb::free-pixmap conn pixmap))))))
 
 (defun pixmap-drawable (v)
@@ -534,7 +534,7 @@
    RELEASE-PIXMAP drops both together, and RERENDER installs a new
    pixmap as current before it draws anything on it."
   (or (viewer-pixmap-drawable v)
-      (let ((drawable (make-instance 'xcb-truetype:pixmap :owned t
+      (let ((drawable (make-instance 'runes/xcb:pixmap :owned t
                                      :connection (xact:widget-connection v)
                                      :id (or (viewer-current-pixmap v)
                                              (error "PIXMAP-DRAWABLE: ~S has no current pixmap." v))
@@ -590,7 +590,7 @@
           ;; the wrapper of this pixmap (see PIXMAP-DRAWABLE).
           (setf (viewer-current-pixmap v) pixmap
                 (viewer-current-size v)   (cons win-w win-h))
-          (xcb-truetype:put-image-chunked conn 2 pixmap (viewer-gc v)
+          (runes/xcb:put-image-chunked conn 2 pixmap (viewer-gc v)
                                           win-w win-h 0 0 0 (xd:app-depth v)
                                           (pack-rgb-for-put-image v dst win-w win-h))
           (when help-p
@@ -763,9 +763,9 @@
    families, else any family.  A NIL subfamily lets XCB-TRUETYPE pick
    Regular, Book or the first available -- not an arbitrary one, which
    is what the first entry of the subfamily table would be."
-  (unless (xcb-truetype:get-font-families)
-    (xcb-truetype:cache-fonts))
-  (let* ((families (xcb-truetype:get-font-families))
+  (unless (runes/xcb:get-font-families)
+    (runes/xcb:cache-fonts))
+  (let* ((families (runes/xcb:get-font-families))
          (family (or (viewer-help-font-family v)
                      (find-if (lambda (cand) (member cand families :test #'string-equal))
                               '("DejaVu Sans" "Noto Sans" "FreeSans" "Liberation Sans"))
@@ -774,7 +774,7 @@
       (error "No TrueType fonts found for the help overlay."))
     ;; A family or subfamily the user named but that is not installed
     ;; signals here, from XCB-TRUETYPE's own check, as it should.
-    (make-instance 'xcb-truetype:font
+    (make-instance 'runes/xcb:font
                    :family family
                    :subfamily (viewer-help-font-subfamily v)
                    :size size)))
@@ -799,10 +799,10 @@
          (screen     (xd:app-screen v))
          (lines      (append '("CLXCB XViewer" "") *help-text*
                              '("" "press ? again to dismiss this help")))
-         (ascent     (xcb-truetype:font-ascent screen font))
-         (b2b        (xcb-truetype:baseline-to-baseline screen font))
+         (ascent     (runes/xcb:font-ascent screen font))
+         (b2b        (runes/xcb:baseline-to-baseline screen font))
          (width-of   (lambda (text)
-                       (if (zerop (length text)) 0 (xcb-truetype:text-line-width screen font text))))
+                       (if (zerop (length text)) 0 (runes/xcb:text-line-width screen font text))))
          (col-gap    (round (* 20 (viewer-scale v))))
          ;; The keys' column is as wide as the widest key.
          (keys-w     (reduce #'max lines
@@ -815,7 +815,7 @@
                                       (if desc
                                           (+ keys-w col-gap (funcall width-of desc))
                                           (funcall width-of keys))))))
-         (text-h     (xcb-truetype:font-lines-height screen font (length lines)))
+         (text-h     (runes/xcb:font-lines-height screen font (length lines)))
          (pad-x      (round (* 28 (viewer-scale v))))
          (pad-y      (round (* 22 (viewer-scale v))))
          (box-w      (+ max-text-w (* 2 pad-x)))
@@ -850,11 +850,11 @@
             for baseline = (+ box-y pad-y ascent (* i b2b))
             when (plusp (length line))
               do (multiple-value-bind (keys desc) (split-help-line line)
-                   (xcb-truetype:draw-text pm-drawable font keys
+                   (runes/xcb:draw-text pm-drawable font keys
                                            (+ box-x pad-x) baseline
                                            :colour (if desc #xA0C8FF #xE0E0E0))
                    (when desc
-                     (xcb-truetype:draw-text pm-drawable font desc
+                     (runes/xcb:draw-text pm-drawable font desc
                                              (+ box-x pad-x keys-w col-gap) baseline
                                              :colour #xE0E0E0)))))
     ;; Leave the GC's foreground as SETUP-WINDOW set it.

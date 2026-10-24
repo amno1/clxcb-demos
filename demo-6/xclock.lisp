@@ -140,11 +140,11 @@
     (values sec min hour)))
 
 (defun choose-clock-font ()
-  (unless (plusp (hash-table-count xcb-truetype:*font-cache*))
-    (xcb-truetype:cache-fonts))
+  (unless (plusp (hash-table-count runes/xcb:*font-cache*))
+    (runes/xcb:cache-fonts))
   (loop for (family subfamily) in +clock-font-candidates+
-        when (and (gethash family xcb-truetype:*font-cache*)
-                  (gethash subfamily (gethash family xcb-truetype:*font-cache*)))
+        when (and (gethash family runes/xcb:*font-cache*)
+                  (gethash subfamily (gethash family runes/xcb:*font-cache*)))
           do (return-from choose-clock-font (values family subfamily)))
   (error "No monospace clock font found among ~{~A~^, ~}"
          (mapcar #'first +clock-font-candidates+)))
@@ -389,24 +389,24 @@
          (box-w  (* width  9/10))
          (box-h  (* height 4/5))
          (size (or (widget-font-size-opt w)
-                   (xcb-truetype:fit-font-size
+                   (runes/xcb:fit-font-size
                     (widget-digital-drawable w)
                     (widget-digital-font-family w)
                     (widget-digital-font-subfamily w)
                     string box-w box-h))))
     (if (null (widget-digital-font w))
         (setf (widget-digital-font w)
-              (make-instance 'xcb-truetype:font
+              (make-instance 'runes/xcb:font
                              :family    (widget-digital-font-family w)
                              :subfamily (widget-digital-font-subfamily w)
                              :size      size))
-        (unless (= size (xcb-truetype:font-size (widget-digital-font w)))
-          (setf (xcb-truetype:font-size (widget-digital-font w)) size)))
+        (unless (= size (runes/xcb:font-size (widget-digital-font w)))
+          (setf (runes/xcb:font-size (widget-digital-font w)) size)))
     (multiple-value-bind (bx by)
-        (xcb-truetype:text-center (widget-digital-drawable w)
+        (runes/xcb:text-center (widget-digital-drawable w)
                                   (widget-digital-font w)
                                   string width height)
-      (xcb-truetype:draw-text-line (widget-digital-drawable w)
+      (runes/xcb:draw-text-line (widget-digital-drawable w)
                                    (widget-digital-font w)
                                    string bx by
                                    :colour (widget-pixel-fg w)))))
@@ -466,12 +466,12 @@
   (let* ((conn (help-conn hw))
          (font (or (help-font hw)
                    (setf (help-font hw)
-                         (make-instance 'xcb-truetype:font
+                         (make-instance 'runes/xcb:font
                                         :family    "DejaVu Sans Mono"
                                         :subfamily "Book"
                                         :size      12))))
          (screen (xd:app-screen (help-owner hw)))
-         (wrap (make-instance 'xcb-truetype:window
+         (wrap (make-instance 'runes/xcb:window
                               :connection conn
                               :id     (help-xid hw)
                               :visual (xcb:root-visual screen)
@@ -480,13 +480,13 @@
     (unwind-protect
          (loop for line in (help-text)
                for i from 0
-               do (xcb-truetype:draw-text wrap font line
+               do (runes/xcb:draw-text wrap font line
                                           +help-margin+
                                           (+ +help-margin+
                                              (* (1+ i) +help-line-height+))
                                           :colour (help-fg hw)))
-      (when (xcb-truetype:drawable-picture wrap)
-        (xcb-render:free-picture conn (xcb-truetype:drawable-picture wrap))))))
+      (when (runes/xcb:drawable-picture wrap)
+        (xcb-render:free-picture conn (runes/xcb:drawable-picture wrap))))))
 
 (defun help-show (hw parent-x parent-y parent-w)
   (let ((conn (help-conn hw)))
@@ -655,24 +655,24 @@
                (width  (model-width w))
                (height (model-height w))
                (size (or (widget-font-size-opt w)
-                         (xcb-truetype:fit-font-size
+                         (runes/xcb:fit-font-size
                           (widget-digital-drawable w)
                           (widget-digital-font-family w)
                           (widget-digital-font-subfamily w)
                           string (* width 9/10) (* height 4/5)))))
           (if (null (widget-digital-font w))
               (setf (widget-digital-font w)
-                    (make-instance 'xcb-truetype:font
+                    (make-instance 'runes/xcb:font
                                    :family    (widget-digital-font-family w)
                                    :subfamily (widget-digital-font-subfamily w)
                                    :size      size))
-              (unless (= size (xcb-truetype:font-size (widget-digital-font w)))
-                (setf (xcb-truetype:font-size (widget-digital-font w)) size)))
+              (unless (= size (runes/xcb:font-size (widget-digital-font w)))
+                (setf (runes/xcb:font-size (widget-digital-font w)) size)))
           (multiple-value-bind (bx by)
-              (xcb-truetype:text-center (widget-digital-drawable w)
+              (runes/xcb:text-center (widget-digital-drawable w)
                                         (widget-digital-font w)
                                         string width height)
-            (xcb-truetype:draw-text-line (widget-digital-drawable w)
+            (runes/xcb:draw-text-line (widget-digital-drawable w)
                                          (widget-digital-font w)
                                          string bx by
                                          :colour (widget-pixel-fg w))))
@@ -914,7 +914,7 @@
       (let* ((conn (xact:widget-connection w))
              (screen (xd:app-screen w))
              (visual (xcb:root-visual screen))
-             (reply (xcb-truetype:pict-formats-reply-for conn))
+             (reply (runes/xcb:pict-formats-reply-for conn))
              (format (xcb-render:find-visual-pict-format reply visual))
              (a8 (xcb-render:find-standard-pict-format
                   reply xcb-render:+pict-standard-a8+)))
@@ -927,7 +927,7 @@
         (setf (widget-render-mask-format w) a8
               (widget-render-format w) format)
         (setf (widget-render-window-picture w)
-              (xcb-truetype:drawable-picture-for
+              (runes/xcb:drawable-picture-for
                (widget-digital-drawable w) format))
         (setf (widget-render-fill-hands w) (xcb:generate-id conn)
               (widget-render-fill-ticks w) (xcb:generate-id conn))
@@ -965,7 +965,7 @@
         (window (xact:widget-window w)))
     (when (widget-digital-drawable w)
       (trivial-garbage:cancel-finalization (widget-digital-drawable w))
-      (ignore-errors (xcb-truetype:destroy-drawable (widget-digital-drawable w)))
+      (ignore-errors (runes/xcb:destroy-drawable (widget-digital-drawable w)))
       (setf (widget-digital-drawable w) nil))
     (setf (widget-pixmap w) nil (widget-render-window-picture w) nil)
     (let* ((screen (xd:app-screen w))
@@ -975,12 +975,12 @@
       (xcb::create-pixmap conn (xcb:root-depth screen)
                           (widget-pixmap w) window width height)
       (setf (widget-digital-drawable w)
-            (make-instance 'xcb-truetype:pixmap :owned t
+            (make-instance 'runes/xcb:pixmap :owned t
                            :connection conn :id (widget-pixmap w)))
       (trivial-garbage:cancel-finalization (widget-digital-drawable w))
       (when (widget-render-format w)
         (setf (widget-render-window-picture w)
-              (xcb-truetype:drawable-picture-for
+              (runes/xcb:drawable-picture-for
                (widget-digital-drawable w) (widget-render-format w))))
       (setf (widget-paint-w w) width
             (widget-paint-h w) height))))
@@ -1210,7 +1210,7 @@
     (clock-teardown-render w)
     (when (widget-digital-drawable w)
       (trivial-garbage:cancel-finalization (widget-digital-drawable w))
-      (ignore-errors (xcb-truetype:destroy-drawable (widget-digital-drawable w)))
+      (ignore-errors (runes/xcb:destroy-drawable (widget-digital-drawable w)))
       (setf (widget-digital-drawable w) nil))
     (ignore-errors (xcb::free-gc conn (widget-gc-face w)))
     (ignore-errors (xcb::free-gc conn (widget-gc-hands w)))

@@ -72,7 +72,7 @@
    (gc        :initform nil)
    (pixmap    :initform nil :documentation "The back buffer drawn into.")
    (pixmap-size :initform nil)
-   (drawable  :initform nil :documentation "The xcb-truetype wrapper of PIXMAP.")
+   (drawable  :initform nil :documentation "The runes/xcb wrapper of PIXMAP.")
    (fonts     :initform (make-hash-table) :documentation "Fonts made, by size.")
    (before-edit :initform nil
                 :documentation "The temperature in Celsius when a box was
@@ -124,19 +124,19 @@
   (or (gethash size (slot-value w 'fonts))
       (setf (gethash size (slot-value w 'fonts))
             (progn
-              (unless (xcb-truetype:get-font-families)
-                (xcb-truetype:cache-fonts))
-              (let* ((families (xcb-truetype:get-font-families))
+              (unless (runes/xcb:get-font-families)
+                (runes/xcb:cache-fonts))
+              (let* ((families (runes/xcb:get-font-families))
                      (fam (or (find-if (lambda (f) (member f families :test #'string-equal))
                                        '("DejaVu Sans" "Noto Sans" "Liberation Sans" "FreeSans"))
                               (first families))))
-                (make-instance 'xcb-truetype:font :family fam :subfamily nil :size size))))))
+                (make-instance 'runes/xcb:font :family fam :subfamily nil :size size))))))
 
 (defun setup-cells (w)
   (let ((st (xact:widget-state w))
         (screen (xd:app-screen w)))
     (flet ((formula (name fn) (xact:install-formula st name fn))
-           (text-w (string) (xcb-truetype:text-width screen (xact:cref st :font) string)))
+           (text-w (string) (runes/xcb:text-width screen (xact:cref st :font) string)))
       ;; The temperature: three editable scales, one relation.
       (let ((c (slot-value w 'celsius)))
         (setf (xact:cref st :c) c
@@ -176,10 +176,10 @@
                    '(:font-size) '(:scale) (lambda (fs) (/ fs +base-font-size+)))
       ;; Everything else follows the font size, one way.
       (formula :font    (lambda () (font-of-size w (xact:cref st :font-size))))
-      (formula :ascent  (lambda () (xcb-truetype:font-ascent screen (xact:cref st :font))))
+      (formula :ascent  (lambda () (runes/xcb:font-ascent screen (xact:cref st :font))))
       ;; FONT-DESCENT is negative: the distance below the baseline.
       (formula :line-h  (lambda () (+ (xact:cref st :ascent)
-                                      (abs (xcb-truetype:font-descent screen (xact:cref st :font))))))
+                                      (abs (runes/xcb:font-descent screen (xact:cref st :font))))))
       (formula :gap     (lambda () (round (xact:cref st :font-size) 2)))
       (formula :margin  (lambda () (round (* 4/3 (xact:cref st :font-size)))))
       (formula :track-h (lambda () (round (* 8/5 (xact:cref st :font-size)))))
@@ -362,7 +362,7 @@
         (setf (slot-value w 'pixmap) pm
               (slot-value w 'pixmap-size) size
               (slot-value w 'drawable)
-              (make-instance 'xcb-truetype:pixmap :owned t :connection conn :id pm
+              (make-instance 'runes/xcb:pixmap :owned t :connection conn :id pm
                                                   :visual (xcb:find-root-visual (xd:app-screen w))
                                                   :screen (xd:app-screen w)))
         (trivial-garbage:cancel-finalization (slot-value w 'drawable))))))
@@ -372,7 +372,7 @@
     ;; DESTROY-DRAWABLE frees the wrapper's RENDER picture and the
     ;; pixmap itself.
     (if (slot-value w 'drawable)
-        (ignore-errors (xcb-truetype:destroy-drawable (slot-value w 'drawable)))
+        (ignore-errors (runes/xcb:destroy-drawable (slot-value w 'drawable)))
         (when (slot-value w 'pixmap)
           (ignore-errors (xcb::free-pixmap conn (slot-value w 'pixmap)))))
     (setf (slot-value w 'drawable) nil (slot-value w 'pixmap) nil
@@ -394,11 +394,11 @@
   (fill-rect w (+ x width -1) y 1 height pixel))
 
 (defun text-width (w string)
-  (xcb-truetype:text-width (xd:app-screen w) (cell w :font) string))
+  (runes/xcb:text-width (xd:app-screen w) (cell w :font) string))
 
 (defun draw-text-at (w x box string colour)
   "STRING at X, centred vertically in BOX."
-  (xcb-truetype:draw-text (slot-value w 'drawable) (cell w :font) string
+  (runes/xcb:draw-text (slot-value w 'drawable) (cell w :font) string
                           x
                           (+ (xact:node-y box)
                              (floor (- (xact:node-height box) (cell w :line-h)) 2)
